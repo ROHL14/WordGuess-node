@@ -2,15 +2,12 @@ const inquirer = require("inquirer");
 const Word = require("./word");
 const wordList = require("random-words");
 
-//chooses a ramdon word using random-words package
 function initPlay() {
   wordToGuess = wordList().split("");
 
-  //create the new object containing the word array and letters objects
   userWord = new Word(wordToGuess);
   userWord.addingCharacters();
 
-  //counter of changes the user had
   lives = wordToGuess.length;
 
   console.log(wordToGuess);
@@ -21,13 +18,14 @@ function initPlay() {
 initPlay();
 
 function game(key) {
-  //console.log(userWord);
-  console.log(key);
+  const guessedLetters = userWord.guessingChar(key);
+
+  console.log(guessedLetters);
 
   console.log(`${lives} guesses remaining `);
 
   const wordGuessed =
-    key
+    guessedLetters
       .split(" ")
       .join("")
       .trim() === userWord.wordLetter.join("")
@@ -59,12 +57,11 @@ function pressKey() {
       } else {
         console.log("CORRECT!!");
       }
-      const guessedLetters = userWord.guessingChar(keyPressed.key);
-      game(guessedLetters);
+
+      game(keyPressed.key);
     });
 }
 
-//iquire if the user wants to keep playing
 function keepPlaying() {
   inquirer
     .prompt({
@@ -74,7 +71,6 @@ function keepPlaying() {
     })
     .then(response => {
       if (response.continue) {
-        //calls the function play to create a new word to keep playing
         initPlay();
       } else {
         console.log("Thanks for playing!");
